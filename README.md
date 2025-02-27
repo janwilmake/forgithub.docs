@@ -2,6 +2,10 @@
 
 LLM context for docs of common libs
 
+## contributing
+
+[Edit the folders available](https://github.com/janwilmake/forgithub.docs/edit/main/public/folders.json) and send a PR!
+
 ## changelog
 
 ### December '24
