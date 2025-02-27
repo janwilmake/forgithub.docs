@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upstash Documentation Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add marked library for markdown parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <!-- Add highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+    <style>
+        /* Your existing styles remain the same */
+        .message-bubble {
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .bounce-in-right {
+            animation: bounce-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        .bounce-in-left {
+            animation: bounce-in-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        @keyframes bounce-in-right {
+            0% {
+                transform: translateX(600px);
+                opacity: 0;
+            }
+
+            60% {
+                transform: translateX(-25px);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce-in-left {
+            0% {
+                transform: translateX(-600px);
+                opacity: 0;
+            }
+
+            60% {
+                transform: translateX(25px);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .typing-dots::after {
+            content: '...';
+            animation: typing 1s infinite;
+        }
+
+        @keyframes typing {
+            0% {
+                content: '';
+            }
+
+            25% {
+                content: '.';
+            }
+
+            50% {
+                content: '..';
+            }
+
+            75% {
+                content: '...';
+            }
+
+            100% {
+                content: '';
+            }
+        }
+
+        /* Add styles for markdown content */
+        .markdown-content {
+            color: inherit;
+        }
+
+        .markdown-content pre {
+            background-color: #1f2937;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .markdown-content code {
+            background-color: #374151;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+        }
+
+        .markdown-content pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .markdown-content p {
+            margin: 0.75rem 0;
+        }
+
+        .markdown-content ul,
+        .markdown-content ol {
+            margin: 0.75rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .markdown-content ul {
+            list-style-type: disc;
+        }
+
+        .markdown-content ol {
+            list-style-type: decimal;
+        }
+
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3,
+        .markdown-content h4,
+        .markdown-content h5,
+        .markdown-content h6 {
+            margin: 1.5rem 0 0.75rem 0;
+            font-weight: bold;
+        }
+
+        .markdown-content h1 {
+            font-size: 1.5rem;
+        }
+
+        .markdown-content h2 {
+            font-size: 1.25rem;
+        }
+
+        .markdown-content h3 {
+            font-size: 1.125rem;
+        }
+
+        /*  */
+        .message-bubble {
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .bounce-in-right {
+            animation: bounce-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        .bounce-in-left {
+            animation: bounce-in-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        @keyframes bounce-in-right {
+            0% {
+                transform: translateX(600px);
+                opacity: 0;
+            }
+
+            60% {
+                transform: translateX(-25px);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce-in-left {
+            0% {
+                transform: translateX(-600px);
+                opacity: 0;
+            }
+
+            60% {
+                transform: translateX(25px);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .typing-dots::after {
+            content: '...';
+            animation: typing 1s infinite;
+        }
+
+        @keyframes typing {
+            0% {
+                content: '';
+            }
+
+            25% {
+                content: '.';
+            }
+
+            50% {
+                content: '..';
+            }
+
+            75% {
+                content: '...';
+            }
+
+            100% {
+                content: '';
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-black h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-zinc-900 border-b border-zinc-800 p-4">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-white">Upstash Documentation Chat</h1>
+            <select id="categorySelect"
+                class="p-2 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                <option value="" disabled selected>Select a category</option>
+                <option value="common">Common (9081 tokens)</option>
+                <option value="devops">DevOps (44936 tokens)</option>
+                <option value="kafka">Kafka (72041 tokens)</option>
+                <option value="qstash">QStash (59626 tokens)</option>
+                <option value="redis">Redis (111924 tokens)</option>
+                <option value="vector">Vector (68050 tokens)</option>
+                <option value="workflow">Workflow (42494 tokens)</option>
+            </select>
+        </div>
+    </header>
+
+    <!-- Chat Container -->
+    <div class="flex-1 max-w-4xl mx-auto w-full p-4 flex flex-col">
+        <!-- Chat Messages -->
+        <div id="chatMessages"
+            class="flex-1 overflow-y-auto mb-4 space-y-4 p-4 bg-zinc-900 rounded-lg border border-zinc-800">
+            <!-- Welcome Message -->
+            <div class="flex items-start space-x-2 bounce-in-left">
+                <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                    <span class="text-black font-bold">U</span>
+                </div>
+                <div class="message-bubble bg-zinc-800 p-3 rounded-lg">
+                    <p class="text-white">Welcome! Please select a documentation category to start chatting about
+                        Upstash.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Examples Section -->
+        <div id="examplesSection" class="bg-zinc-900 rounded-lg border border-zinc-800 p-4 mb-4 hidden">
+            <h3 class="text-white text-sm mb-2">Try asking about:</h3>
+            <div id="examples" class="flex flex-wrap gap-2">
+                <!-- Examples will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="bg-zinc-900 rounded-lg border border-zinc-800 p-4">
+            <form id="chatForm" class="flex space-x-4">
+                <input type="text" id="messageInput"
+                    class="flex-1 p-2 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Type your message..." disabled>
+                <button type="submit"
+                    class="bg-green-500 text-black px-6 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                    Send
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+        marked.setOptions({
+            highlight: function (code, language) {
+                if (language && hljs.getLanguage(language)) {
+                    return hljs.highlight(code, { language: language }).value;
+                }
+                return hljs.highlightAuto(code).value;
+            },
+            breaks: true,
+            gfm: true
+        });
+        const categorySelect = document.getElementById('categorySelect');
+        const chatForm = document.getElementById('chatForm');
+        const messageInput = document.getElementById('messageInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const examplesSection = document.getElementById('examplesSection');
+        const examplesContainer = document.getElementById('examples');
+
+        // Category-specific examples
+        const categoryExamples = {
+            common: [
+                "How to get started with Upstash?",
+                "What are the basic concepts?",
+                "How to handle authentication?"
+            ],
+            devops: [
+                "How to deploy Upstash with Docker?",
+                "How to monitor Upstash services?",
+                "How to set up CI/CD pipelines?"
+            ],
+            kafka: [
+                "How to create a Kafka topic?",
+                "How to implement pub/sub messaging?",
+                "How to handle message retention?"
+            ],
+            qstash: [
+                "How to schedule messages?",
+                "How to implement webhooks?",
+                "How to manage message queues?"
+            ],
+            redis: [
+                "How to use Redis caching?",
+                "How to implement rate limiting?",
+                "How to handle Redis transactions?"
+            ],
+            vector: [
+                "How to create vector embeddings?",
+                "How to implement similarity search?",
+                "How to optimize vector operations?"
+            ],
+            workflow: [
+                "How to create a new workflow?",
+                "How to handle workflow errors?",
+                "How to implement conditional steps?"
+            ]
+        };
+
+        let selectedCategory = '';
+        let messages = [];
+
+        function updateExamples(category) {
+            examplesContainer.innerHTML = '';
+            categoryExamples[category].forEach(example => {
+                const exampleButton = document.createElement('button');
+                exampleButton.className = 'px-3 py-1 bg-zinc-800 text-white rounded-full text-sm hover:bg-zinc-700 transition-colors';
+                exampleButton.textContent = example;
+                exampleButton.onclick = (e) => {
+                    e.preventDefault();
+                    messageInput.value = example;
+                    messageInput.focus();
+                };
+                examplesContainer.appendChild(exampleButton);
+            });
+            examplesSection.classList.remove('hidden');
+        }
+
+        async function fetchDocs(category) {
+            try {
+                const response = await fetch(`http://docs.uithub.com/upstash/${category}`);
+                const docs = await response.text();
+                return docs;
+            } catch (error) {
+                console.error('Error fetching docs:', error);
+                return '';
+            }
+        }
+
+        categorySelect.addEventListener('change', async (e) => {
+            selectedCategory = e.target.value;
+            messageInput.disabled = false;
+            chatForm.querySelector('button').disabled = false;
+            updateExamples(selectedCategory);
+
+            // Reset messages with system prompt
+            const docs = await fetchDocs(selectedCategory);
+            messages = [
+                {
+                    role: "system",
+                    content: `You are an Upstash documentation assistant. Use the following documentation to answer questions: ${docs}`
+                }
+            ];
+
+            addMessage(`You've selected the ${selectedCategory.toUpperCase()} category. How can I help you with Upstash ${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}?`, 'assistant');
+        });
+
+        async function sendMessage(message) {
+            try {
+                const response = await fetch("https://chatcompletions.com/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-LLM-Base-Path": "https://api.deepseek.com/v1",
+                        "X-LLM-API-Key": "sk-da20d20fa9ea4046a5722df89929d2d2"
+                    },
+                    body: JSON.stringify({
+                        messages,
+                        model: "deepseek-chat",
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            } catch (error) {
+                console.error('Error:', error);
+                return 'Sorry, there was an error processing your request.';
+            }
+        }
+
+
+        // Update the addMessage function to handle markdown
+        function addMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex items-start space-x-2 ${sender === 'user' ? 'flex-row-reverse space-x-reverse bounce-in-right' : 'bounce-in-left'}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = `w-8 h-8 rounded-full ${sender === 'user' ? 'bg-zinc-700' : 'bg-green-500'} flex items-center justify-center`;
+            avatar.innerHTML = `<span class="${sender === 'user' ? 'text-white' : 'text-black'} font-bold">${sender === 'user' ? 'U' : 'A'}</span>`;
+
+            const bubble = document.createElement('div');
+            bubble.className = `message-bubble ${sender === 'user' ? 'bg-green-500 text-black' : 'bg-zinc-800 text-white'} p-3 rounded-lg`;
+
+            // Parse markdown for assistant messages only
+            if (sender === 'assistant') {
+                const markdownContent = document.createElement('div');
+                markdownContent.className = 'markdown-content';
+                markdownContent.innerHTML = marked.parse(message);
+                bubble.appendChild(markdownContent);
+            } else {
+                bubble.innerHTML = `<p>${message}</p>`;
+            }
+
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(bubble);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Initialize syntax highlighting for code blocks
+            if (sender === 'assistant') {
+                bubble.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightBlock(block);
+                });
+            }
+        }
+
+
+        function addTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'flex items-start space-x-2 bounce-in-left typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                    <span class="text-black font-bold">A</span>
+                </div>
+                <div class="message-bubble bg-zinc-800 p-3 rounded-lg">
+                    <p class="text-white typing-dots">Thinking</p>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return typingDiv;
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            if (message) {
+                // Disable input while processing
+                messageInput.value = '';
+                messageInput.disabled = true;
+                chatForm.querySelector('button').disabled = true;
+
+                // Add user message
+                addMessage(message, 'user');
+                messages.push({ role: "user", content: message });
+
+                // Add typing indicator
+                const typingIndicator = addTypingIndicator();
+
+                // Get response
+                const response = await sendMessage(message);
+                messages.push({ role: "assistant", content: response });
+
+                // Remove typing indicator and add response
+                chatMessages.removeChild(typingIndicator);
+                addMessage(response, 'assistant');
+
+                // Re-enable input
+                messageInput.disabled = false;
+                chatForm.querySelector('button').disabled = false;
+                messageInput.focus();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "uithub_docs"
+main = "main.ts"
+compatibility_date = "2024-12-26"
+dev.port = 3000
+
+assets = { directory = "./public" }
+
+routes = [
+  { pattern = "docs.forgithub.com", custom_domain = true }
+]

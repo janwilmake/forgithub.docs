@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Context For Common Libs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://docs.uithub.com" />
+    <meta property="og:image" content="https://quickog.com/screenshot/docs.uithub.com" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(to right, #a78bfa, #ec4899);
+        }
+
+        /* Streamlined list items */
+        .lib-item {
+            transition: all 0.2s ease;
+        }
+
+        .lib-item:hover {
+            background-color: rgba(124, 58, 237, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-black min-h-screen">
+    <nav class="bg-black/80 backdrop-blur-sm sticky top-0 z-50 border-b border-purple-900/30">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="/"
+                    class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                    docs for github
+                </a>
+                <div class="flex items-center space-x-8">
+                    <a href="/" class="text-white hover:text-purple-400 transition-colors">Home</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-12">
+        <h1
+            class="text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 text-center float-animation">
+            LLM Context For Common Libs
+        </h1>
+        <p class="text-gray-400 mb-12 text-center text-lg">
+            <a href="/llms.txt" class="text-purple-400 hover:text-purple-300 hover:underline transition-colors">for
+                llms</a>,
+            powered by <a href="https://uithub.com"
+                class="text-purple-400 hover:text-purple-300 hover:underline transition-colors">uithub</a> and
+            <a href="https://nachocache.com"
+                class="text-purple-400 hover:text-purple-300 hover:underline transition-colors">nachocache</a> -
+            <a href="https://x.com/janwilmake"
+                class="text-purple-400 hover:text-purple-300 hover:underline transition-colors">DM</a> to request more
+            libs
+        </p>
+
+        <div id="content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </div>
+
+    <!-- Hidden textarea for clipboard operations -->
+    <textarea id="clipboard-helper" class="hidden"></textarea>
+
+    <footer class="py-8 mt-16 border-t border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center items-center text-gray-500">
+                <span>docs.forgithub.com - Powered by GitHub (but not affiliated)</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        async function copyToClipboard(text, copyBtn) {
+            const helper = document.getElementById('clipboard-helper');
+            helper.value = text;
+            helper.classList.remove('hidden');
+            helper.select();
+            document.execCommand('copy');
+            helper.classList.add('hidden');
+
+            const originalContent = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied';
+            copyBtn.disabled = true;
+            copyBtn.classList.add('text-green-500');
+
+            setTimeout(() => {
+                copyBtn.innerHTML = originalContent;
+                copyBtn.disabled = false;
+                copyBtn.classList.remove('text-green-500');
+            }, 1000);
+        }
+
+        async function fetchAndDisplayFolders() {
+            try {
+                const response = await fetch('/folders.json');
+                const data = await response.json();
+                const content = document.getElementById('content');
+
+                // Create sections for each owner
+                for (const [owner, info] of Object.entries(data)) {
+                    const section = document.createElement('div');
+                    section.className = 'bg-gray-900 rounded-lg p-6 shadow-lg';
+
+                    const title = document.createElement('h2');
+                    title.className = 'text-2xl font-bold mb-4 gradient-text';
+                    title.textContent = owner;
+
+                    const list = document.createElement('ul');
+                    list.className = 'space-y-1';
+
+                    // Create streamlined list items for each folder
+                    info.folders.forEach(folder => {
+                        const li = document.createElement('li');
+                        li.className = 'lib-item rounded px-3 py-2 flex items-center justify-between';
+
+                        // Left side with folder name
+                        const linkContainer = document.createElement('div');
+                        linkContainer.className = 'flex items-center flex-grow';
+
+                        const link = document.createElement('a');
+                        link.href = `/${owner}/${folder}`;
+                        link.className = 'text-purple-400 hover:text-purple-300 hover:underline text-sm flex-grow';
+                        link.textContent = folder;
+
+                        const tokenCount = document.createElement('span');
+                        tokenCount.className = 'text-gray-500 text-xs mx-2';
+                        tokenCount.id = `tokens-${owner}-${folder.replace(/\//g, '-')}`;
+
+                        linkContainer.appendChild(link);
+                        linkContainer.appendChild(tokenCount);
+
+                        // Right side with icons
+                        const actionsContainer = document.createElement('div');
+                        actionsContainer.className = 'flex space-x-2 items-center text-gray-400';
+
+                        const copyBtn = document.createElement('button');
+                        copyBtn.className = 'text-sm hover:text-purple-400 transition-colors';
+                        copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                        copyBtn.id = `copy-${owner}-${folder.replace(/\//g, '-')}`;
+                        copyBtn.title = "Copy context";
+
+                        const uithubBtn = document.createElement('a');
+                        uithubBtn.href = `https://uithub.com/${info.repo}/${folder}`;
+                        uithubBtn.target = '_blank';
+                        uithubBtn.className = 'text-sm hover:text-purple-400 transition-colors';
+                        uithubBtn.innerHTML = '<i class="far fa-file-alt"></i>';
+                        uithubBtn.title = "View on UIThub";
+
+                        const githubBtn = document.createElement('a');
+                        githubBtn.href = `https://github.com/${info.repo}/${folder}`;
+                        githubBtn.target = '_blank';
+                        githubBtn.className = 'text-sm hover:text-gray-300 transition-colors';
+                        githubBtn.innerHTML = '<i class="fab fa-github"></i>';
+                        githubBtn.title = "View on GitHub";
+
+                        const githuqBtn = document.createElement('a');
+                        githuqBtn.href = `https://githuq.com/${info.repo}/${folder}`;
+                        githuqBtn.target = '_blank';
+                        githuqBtn.className = 'text-sm hover:text-gray-300 transition-colors';
+                        githuqBtn.innerHTML = '<i class="fas fa-comments"></i>';
+                        githuqBtn.title = "Chat about this library";
+
+                        actionsContainer.appendChild(copyBtn);
+                        actionsContainer.appendChild(uithubBtn);
+                        actionsContainer.appendChild(githubBtn);
+                        actionsContainer.appendChild(githuqBtn);
+
+                        li.appendChild(linkContainer);
+                        li.appendChild(actionsContainer);
+                        list.appendChild(li);
+
+                        // Start fetching the content
+                        const url = info.$ref.replace('[folder]', folder);
+                        fetch(url)
+                            .then(response => response.text())
+                            .then(text => {
+                                const tokens = Math.round(text.length / 5);
+                                tokenCount.textContent = `(${tokens.toLocaleString()})`;
+
+                                copyBtn.onclick = () => copyToClipboard(text, copyBtn);
+                            })
+                            .catch(error => {
+                                console.error(`Error fetching ${url}:`, error);
+                                tokenCount.textContent = '(error)';
+                            });
+                    });
+
+                    section.appendChild(title);
+                    section.appendChild(list);
+                    content.appendChild(section);
+                }
+            } catch (error) {
+                console.error('Error fetching folders:', error);
+                document.getElementById('content').innerHTML = '<p class="text-red-600 text-xl text-center py-12">Error loading folders</p>';
+            }
+        }
+
+        // Start loading when the page loads
+        document.addEventListener('DOMContentLoaded', fetchAndDisplayFolders);
+    </script>
+</body>
+
+</html>
