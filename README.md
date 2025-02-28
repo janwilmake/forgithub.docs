@@ -2,11 +2,15 @@
 
 LLM context for docs of common libs
 
-## contributing
+## Overview
+
+This project provides a simple way to access LLM context for common libraries and frameworks. It uses a combination of GitHub, uithub, and nachocache to provide a fast and efficient way to access documentation.
+
+## Contributing
 
 [Edit the folders available](https://github.com/janwilmake/forgithub.docs/edit/main/public/folders.json) and send a PR!
 
-## changelog
+## Changelog
 
 ### December '24
 
@@ -24,3 +28,35 @@ LLM context for docs of common libs
 ### February 27, 2025
 
 Rebranding, redesign, fix caching stale-while-revalidate, fixed folders of fly.io, and add some buttons.
+
+### how to use
+* go to https://docs.forgithub.com and click the library you're interested in
+* select a folder from the library
+* click the copy button to copy the context for that folder
+* use the context in your favorite LLM model
+
+### supported libraries
+* Upstash
+* Cloudflare
+* Deno
+* Fly.io
+
+## Deployment
+
+This project is deployed using Cloudflare Workers. The `wrangler.toml` file contains the configuration for the deployment.
+
+## Development
+
+To run the project locally, use `wrangler dev`. This will start a development server that you can use to test the project.
+
+## API Documentation
+
+The API documentation is available at https://docs.forgithub.com/llms.txt. This file contains a list of all the libraries and folders that are available, along with a brief description of each.
+
+## Contributing
+
+If you'd like to contribute to this project, please fork the repository and submit a pull request. Please make sure to follow the standard professional guidelines for commit messages and API documentation.
+
+## License
+
+This project is licensed under the MIT License.
