@@ -1,61 +1,51 @@
 # Docs for GitHub
 
-LLM context for docs of common libs
+LLM context for documentation of common libraries and frameworks.
 
 ## Overview
 
-This project provides a simple way to access LLM context for common libraries and frameworks. It uses a combination of GitHub, uithub, and nachocache to provide a fast and efficient way to access documentation.
+This project provides a simple way to access documentation context for popular libraries and frameworks for use with LLMs. It combines GitHub repository content with uithub and nachocache for efficient and fast documentation access.
 
-## Contributing
+## How to Use
 
-[Edit the folders available](https://github.com/janwilmake/forgithub.docs/edit/main/public/folders.json) and send a PR!
+* Visit [docs.forgithub.com](https://docs.forgithub.com) and select your library of interest
+* Choose a specific folder or documentation section
+* Copy the context using the copy button
+* Paste the context into your favorite LLM model
 
-## Changelog
+## Supported Libraries
 
-### December '24
-
-1. ✅ `folders.json`: create a mapping between owner and the repo and subdirectories to be available under which name: manually
-2. ✅ proxy :owner/:folder to [folder] replaced $ref using simple worker script. docs.uithub.com/[owner]/[subset] should use daily refresh uithub ?lines=false&maxTokens=10000000000
-3. ✅ html at https://docs.uithub.com, takes folders.json and fetches all folders. makes context copyable using copy button. tokencount shown for each. no-bullshit headline: "Perfect Context For Any Lib"
-4. ✅ deploy this at docs.uithub.com
-5. ✅ docs.uithub.com/llms.txt should overview all subsets
-6. ✅ cache popular stuff on uithub using nachocache so individual pages become fast and max 1d old (only for large, expensive, repos)
-
-🎉 Now i have great context for cloudflare, deno, upstash, and my other favorite platforms. the great thing is the speed.
-
-😏 This is a great base to start; from here we can further reduce context for any given task using the 'everything is a hierarchy' concept, looking at the package.json and environment as a starting point.
-
-### February 27, 2025
-
-Rebranding, redesign, fix caching stale-while-revalidate, fixed folders of fly.io, and add some buttons.
-
-### how to use
-* go to https://docs.forgithub.com and click the library you're interested in
-* select a folder from the library
-* click the copy button to copy the context for that folder
-* use the context in your favorite LLM model
-
-### supported libraries
 * Upstash
 * Cloudflare
 * Deno
 * Fly.io
-
-## Deployment
-
-This project is deployed using Cloudflare Workers. The `wrangler.toml` file contains the configuration for the deployment.
-
-## Development
-
-To run the project locally, use `wrangler dev`. This will start a development server that you can use to test the project.
-
-## API Documentation
-
-The API documentation is available at https://docs.forgithub.com/llms.txt. This file contains a list of all the libraries and folders that are available, along with a brief description of each.
+* Bun
 
 ## Contributing
 
-If you'd like to contribute to this project, please fork the repository and submit a pull request. Please make sure to follow the standard professional guidelines for commit messages and API documentation.
+Want to add a new library? It's simple:
+
+1. [Edit the folders.json file](https://github.com/janwilmake/forgithub.docs/edit/main/public/folders.json) to add your library mapping
+2. Submit a PR with your changes
+
+We welcome all contributions that help expand the available documentation!
+
+## Development
+
+* Run locally with `wrangler dev`
+* Deploy with Cloudflare Workers using the configuration in `wrangler.toml`
+
+## Changelog
+
+### February 2025
+Rebranding, redesign, fixed caching with stale-while-revalidate approach, fixed Fly.io folders, and added navigation buttons.
+
+### December 2024
+Initial release with core functionality:
+* Created `folders.json` mapping between owners, repos and directories
+* Implemented proxy mechanism for documentation content
+* Built HTML interface with copy functionality and token counting
+* Deployed at docs.forgithub.com with caching for popular content
 
 ## License
 
